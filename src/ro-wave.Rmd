@@ -1,0 +1,132 @@
+---
+title: "RO-Wave Energy"
+author: "Hattie"
+date: "6/2/2020"
+output: pdf_document
+---
+
+```{r}
+library("tidymodels")
+library("tidyverse"); theme_set(theme_minimal())
+theme_update(panel.grid.minor = element_blank())
+library("lubridate")
+library("ggplot2")
+library("gridExtra")
+library("viridis")
+```
+
+```{r}
+load("/Users/hattiemeans/Desktop/summer prog/roenergyMoWater.rda")
+
+
+str(fulldata)
+head(fulldata)
+colnames(fulldata)
+view(fulldata)
+```
+
+
+NOTE: 
+
+operational variables are used to calculate the integrity of the membrane. 
+operational variables in this data set:
+  -pressure
+  -volume
+  -temp
+  -flowrates
+  -permeability
+  
+```{r}
+# turn data into tibble 
+data <- as_tibble(fulldata)
+
+## taking out repetative data
+data <- subset(data, data$experiment != 6 & data$experiment != 11)
+unique(data$experiment)
+
+## convert date, time to time: POSIXct
+data$time <- paste(data$date, data$time) %>%
+  parse_date_time('%Y-%m-%d %H:%M:%S %p')
+
+data <- data %>%
+  select(-date)
+data$experiment <- as.factor(data$experiment)
+rm(temp)
+```
+
+```{r}
+## divide data by experiment
+tapply(data$experiment, data$experiment, length)
+
+ex1Data <- data %>% 
+  filter(experiment == 1)
+#view(ex1Data)
+glimpse(ex1Data)
+
+ex2Data <- data %>% 
+  filter(experiment == 2) %>% 
+#view(ex2Data)
+
+ex3Data <- data %>% 
+  filter(experiment == 3)
+#view(ex3Data)
+
+ex4Data <- data %>% 
+  filter(experiment == 4)
+#view(ex4Data)
+
+ex5Data <- data %>% 
+  filter(experiment == 5)
+#view(ex5Data)
+
+ex6Data <- data %>% 
+  filter(experiment == 6)
+#view(ex6Data)
+glimpse(ex6Data)
+
+ex7Data <- data %>% 
+  filter(experiment == 7)
+#view(ex7Data)
+
+ex8Data <- data %>% 
+  filter(experiment == 8)
+#view(ex8Data)
+
+ex9Data <- data %>% 
+  filter(experiment == 9)
+#view(ex9Data)
+
+ex10Data <- data %>% 
+  filter(experiment == 10)
+#view(ex10Data)
+
+ex11Data <- data %>% 
+  filter(experiment == 11)
+#view(ex11Data)
+
+data %>% 
+  ggplot(data, ase)
+```
+
+```{r}
+data %>%
+  filter(experiment == 2 | experiment == 11) %>%
+  select(-time, -permeate_tank_level, -feed_cleaning_valve_state,
+         -permeate_discharge_valve_state, -system_mode) %>%
+  group_by(experiment) %>%
+  summarise_all(mean) %>%
+  as.data.frame
+
+data %>%
+  filter(experiment == 1 | experiment == 6) %>%
+  select(-time, -permeate_tank_level, -feed_cleaning_valve_state,
+         -permeate_discharge_valve_state, -system_mode) %>%
+  group_by(experiment) %>%
+  summarise_all(mean) %>%
+  as.data.frame
+```
+
+
+
+
+

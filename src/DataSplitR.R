@@ -28,6 +28,22 @@ data <- data %>%
   filter(experiment != 6 & experiment != 11) %>%
   select(-iteration, -permeate_tank_level, -feed_cleaning_valve_state, -permeate_discharge_valve_state)
 
+pressureDataExp1 <- data %>%
+                  filter(experiment == 1) %>%
+                  select(feed_pressure_psi)
+
+pressureDataExp2 <- data %>%
+                  filter(experiment == 2) %>%
+                  select(feed_pressure_psi)
+
+pressureDataExp3 <- data %>%
+    filter(experiment == 3) %>%
+  select(feed_pressure_psi)
+
+pressureDataExp4 <- data %>%
+  filter(experiment == 4) %>%
+  select(feed_pressure_psi)
+
 unique(data$experiment)
 
 data %>%
@@ -37,7 +53,11 @@ data %>%
   geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
 
 
-View(data)
+data %>%
+  filter(experiment == 1) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
 
 
 

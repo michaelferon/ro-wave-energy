@@ -13,6 +13,7 @@ load('../data/data.Rdata')
 ## Number of experiments = 9.
 N <- 9
 
+dfs <- list()
 for (i in 1:N) {
   temp <- data %>%
     filter(experiment == i)
@@ -31,6 +32,7 @@ for (i in 1:N) {
     hzHour = seq(0, 1, length = nrow(temp)) * 60
   ) %>%
     slice(1:cut)
+  dfs[[i]] <- df
   
   pdf(file = paste('../plots/fft/frequency', i,
                    '.pdf', sep = ''), height = 3.5, width = 10.0)

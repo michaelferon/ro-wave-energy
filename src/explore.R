@@ -27,7 +27,7 @@ ggplot(data, aes(x = feed_pressure_psi, color = experiment)) +
 for (i in 1:N) {
   df <- gather(data, key = measure, value = value,
                c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
-  pdf(file = paste('../plots/permeate_conductivity/permeate_conductivity', i,
+  pdf(file = paste('../plots/ts/permeate_conductivity/permeate_conductivity', i,
                    '.pdf', sep = ''), height = 4.0, width = 8.67)
   g <- df %>%
     filter(experiment == i) %>%
@@ -47,7 +47,7 @@ rm(df, g)
 
 ## Plots of feed pressure for each experiment.
 for (i in 1:N) {
-  pdf(file = paste('../plots/feed_pressure/feed_pressure', i,
+  pdf(file = paste('../plots/ts/feed_pressure/feed_pressure', i,
                    '.pdf', sep = ''), height = 4.0, width = 8.67)
   g <- data %>%
     filter(experiment == i) %>%
@@ -64,7 +64,7 @@ for (i in 1:N) {
 
 ## Plots of feed flowrate for each experiment.
 for (i in 1:N) {
-  pdf(file = paste('../plots/feed_flowrate/feed_flowrate', i,
+  pdf(file = paste('../plots/ts/feed_flowrate/feed_flowrate', i,
                    '.pdf', sep = ''), height = 4.0, width = 8.67)
   g <- data %>%
     filter(experiment == i) %>%
@@ -81,7 +81,7 @@ for (i in 1:N) {
 
 ## Plots of water flux for each experiment.
 for (i in 1:N) {
-  pdf(file = paste('../plots/water_flux/water_flux', i,
+  pdf(file = paste('../plots/ts/water_flux/water_flux', i,
                    '.pdf', sep = ''), height = 4.0, width = 8.67)
   g <- data %>%
     filter(experiment == i) %>%

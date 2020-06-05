@@ -12,6 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
+OUTPUT <- FALSE
 
 
 ## Feed Pressure distribution by experiment.
@@ -27,8 +28,10 @@ ggplot(data, aes(x = feed_pressure_psi, color = experiment)) +
 for (i in 1:N) {
   df <- gather(data, key = measure, value = value,
                c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
-  pdf(file = paste('../plots/permeate_conductivity/permeate_conductivity', i,
-                   '.pdf', sep = ''), height = 4.0, width = 8.67)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/permeate_conductivity/permeate_conductivity', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
   g <- df %>%
     filter(experiment == i) %>%
     ggplot(aes(time, value, group = measure, color = measure)) +
@@ -40,15 +43,19 @@ for (i in 1:N) {
                        labels = c('High', 'Low')) +
     theme_minimal()
   print(g)
-  dev.off()
+  if (OUTPUT) {
+    dev.off()
+  }
 }
 rm(df, g)
 
 
 ## Plots of feed pressure for each experiment.
 for (i in 1:N) {
-  pdf(file = paste('../plots/feed_pressure/feed_pressure', i,
-                   '.pdf', sep = ''), height = 4.0, width = 8.67)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/feed_pressure/feed_pressure', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_pressure_psi)) +
@@ -58,14 +65,18 @@ for (i in 1:N) {
     xlab('Time') + ylab('Feed Pressure (psi)') + ylim(-5.61, 1114.9) +
     theme_minimal()
   print(g)
-  dev.off()
+  if (OUTPUT) {
+    dev.off()
+  }
 }
 
 
 ## Plots of feed flowrate for each experiment.
 for (i in 1:N) {
-  pdf(file = paste('../plots/feed_flowrate/feed_flowrate', i,
-                   '.pdf', sep = ''), height = 4.0, width = 8.67)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/feed_flowrate/feed_flowrate', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_flowrate_l_min)) +
@@ -75,7 +86,9 @@ for (i in 1:N) {
     xlab('Time') + ylab('Feed Flowrate') +
     theme_minimal()
   print(g)
-  dev.off()
+  if (OUTPUT) {
+    dev.off()
+  }
 }
 
 

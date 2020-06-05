@@ -12,6 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
+OUTPUT <- FALSE
 
 dfs <- list()
 for (i in 1:N) {
@@ -34,8 +35,10 @@ for (i in 1:N) {
     slice(1:cut)
   dfs[[i]] <- df
   
-  pdf(file = paste('../plots/fft/frequency', i,
-                   '.pdf', sep = ''), height = 3.5, width = 10.0)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/fft/frequency', i,
+                     '.pdf', sep = ''), height = 3.5, width = 10.0)
+  }
   g <- df %>%
     ggplot(aes(x = hzHour, y = 0, xend = hzHour, yend = mod)) +
     geom_segment(color = 'SteelBlue') +
@@ -45,7 +48,16 @@ for (i in 1:N) {
     theme(panel.grid.minor = element_blank()) +
     theme_minimal()
   print(g)
-  dev.off()
+  
+  if (OUTPUT) {
+    dev.off()
+  }
+}
+rm(df, g, cut)
+
+for (i in 1:N) {
+  s <- which.max(dfs[[i]]$mod)
+  print(dfs[[i]] %>% slice(s))
 }
 
   

@@ -6,7 +6,6 @@ library(lubridate)
 
 
 #load data
-load("/Users/jonathanyun/Desktop/ro-wave-energy/data/roenergyMoWater.rda")
 View(fulldata)
 
 data <- fulldata %>% as_tibble
@@ -46,18 +45,62 @@ pressureDataExp4 <- data %>%
 
 unique(data$experiment)
 
+#permeability graphs
+data %>%
+  filter(experiment == 1) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+
 data %>%
   filter(experiment == 2) %>%
   ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
   geom_line(color = 'steelblue') +
   geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
 
-
 data %>%
-  filter(experiment == 1) %>%
+  filter(experiment == 3) %>%
   ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
   geom_line(color = 'steelblue') +
   geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 4) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 5) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 7) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 8) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 9) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
+data %>%
+  filter(experiment == 10) %>%
+  ggplot(aes(x = time, y = permeate_conductivity_high_us)) +
+  geom_line(color = 'steelblue') +
+  geom_line(aes(x = time, y = permeate_conductivity_low_us), color = 'orangered3')
+
 
 
 

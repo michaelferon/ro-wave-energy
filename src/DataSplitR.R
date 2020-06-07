@@ -6,6 +6,7 @@ library(lubridate)
 
 
 #load data
+load('../data/data.Rdata')
 View(fulldata)
 
 data <- fulldata %>% as_tibble
@@ -103,5 +104,6 @@ data %>%
 
 
 
-
+ exp1 <- data %>%
+  filter(experiment == 1)
 

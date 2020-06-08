@@ -106,4 +106,31 @@ data %>%
 
  exp1 <- data %>%
   filter(experiment == 1)
+ 
+ 
+ 
+ 
+ #permeability coefficient function? 
+ #water_flux = water flux 
+ #feed_press = P_in (feed pressure)
+ #press_feed_sol = pi_feed
+ #press_reject = pi_rej
+ #press_perm = pi_perm
+
+ water_perm_coeff <- function(water_flux, feed_press, press_feed_sol, press_reject, press_perm){
+   coeff <- water_flux/ (feed_press - ((press_feed_sol + press_reject) / 2) + press_perm)
+   return(coeff)
+ }
+ 
+ 
+ 
+ #test of function
+ exp1 <- data %>%
+   filter(experiment == 1)
+ glimpse(exp1)
+ exp1[430,]
+
+
+ water_perm_coeff(exp1$water_flux_lmh[430], exp1$feed_pressure_psi[430], 409, exp1$)
+ 
 

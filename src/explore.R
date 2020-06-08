@@ -65,6 +65,26 @@ for (i in 1:N) {
 }
 
 
+## Boxplot by experiment.
+del <- c(1, 2, 3, 8, 13, 14, 16, 17, 18, 19)
+vars <- names(data[-del])
+for (var in vars) {
+  boxplot(data[[var]] ~ data$experiment, xlab = 'Experiment', ylab = var,
+          main = 'Boxplots by experiment')
+}
+
+
+## Simple linear model.
+model <- data %>%
+  select(-time, -runtime_h, -permeate_conductivity_high_us, -reject_conductivity_ms,
+         -experiment, -ac_current_a) %>%
+  lm(permeate_conductivity_low_us ~ ., data = .)
+summary(model)
+plot(model)
+
+
+
+
 
 
 

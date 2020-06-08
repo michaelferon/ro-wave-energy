@@ -15,6 +15,16 @@ N <- 9
 OUTPUT <- FALSE
 
 
+## Experiments summary.
+data %>%
+  select(-time, -runtime_h, -system_mode) %>%
+  group_by(experiment) %>%
+  summarise_all(mean) %>%
+  as.data.frame
+
+
+
+.
 ## Feed Pressure distribution by experiment.
 ggplot(data, aes(x = feed_pressure_psi, color = experiment)) +
   geom_density() +

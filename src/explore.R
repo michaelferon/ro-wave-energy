@@ -12,7 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
-OUTPUT <- FALSE
+OUTPUT <- TRUE
 
 
 ## Experiments summary.
@@ -39,7 +39,7 @@ for (i in 1:N) {
   df <- gather(data, key = measure, value = value,
                c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
   if (OUTPUT) {
-    pdf(file = paste('../plots/permeate_conductivity/permeate_conductivity', i,
+    pdf(file = paste('../plots/ts/permeate_conductivity/permeate_conductivity', i,
                      '.pdf', sep = ''), height = 4.0, width = 8.67)
   }
   g <- df %>%
@@ -57,13 +57,12 @@ for (i in 1:N) {
     dev.off()
   }
 }
-rm(df, g)
 
 
 ## Plots of feed pressure for each experiment.
 for (i in 1:N) {
   if (OUTPUT) {
-    pdf(file = paste('../plots/feed_pressure/feed_pressure', i,
+    pdf(file = paste('../plots/ts/feed_pressure/feed_pressure', i,
                      '.pdf', sep = ''), height = 4.0, width = 8.67)
   }
   g <- data %>%
@@ -84,7 +83,7 @@ for (i in 1:N) {
 ## Plots of feed flowrate for each experiment.
 for (i in 1:N) {
   if (OUTPUT) {
-    pdf(file = paste('../plots/feed_flowrate/feed_flowrate', i,
+    pdf(file = paste('../plots/ts/feed_flowrate/feed_flowrate', i,
                      '.pdf', sep = ''), height = 4.0, width = 8.67)
   }
   g <- data %>%
@@ -117,6 +116,7 @@ for (i in 1:N) {
   print(g)
   dev.off()
 }
+rm(df, g)
 
 
 ## Scatterplot matrices.

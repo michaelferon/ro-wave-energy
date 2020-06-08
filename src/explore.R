@@ -58,11 +58,13 @@ for (i in 1:N) {
       rej_flow = reject_flowrate_l_min,
       rej_cond = reject_conductivity_ms,
     ) %>%
-    pairs(cex = 0.20) #, col = colors[i])
+    pairs(cex = 0.10) #, col = colors[i])
   if (OUTPUT) {
     dev.off()
   }
 }
+
+
 
 
 

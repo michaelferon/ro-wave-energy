@@ -12,7 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
-OUTPUT <- TRUE
+OUTPUT <- FALSE
 
 
 ## Experiments summary.
@@ -34,102 +34,34 @@ ggplot(data, aes(x = feed_pressure_psi, color = experiment)) +
   theme_minimal()
 
 
-## Plots of conductivity for each experiment.
-for (i in 1:N) {
-  df <- gather(data, key = measure, value = value,
-               c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
-  if (OUTPUT) {
-    pdf(file = paste('../plots/ts/permeate_conductivity/permeate_conductivity', i,
-                     '.pdf', sep = ''), height = 4.0, width = 8.67)
-  }
-  g <- df %>%
-    filter(experiment == i) %>%
-    ggplot(aes(time, value, group = measure, color = measure)) +
-    geom_line() +
-    ggtitle('Permeate Conductivity') +
-    labs(subtitle = paste('Experiment', i), color = 'Measure') +
-    xlab('Time') + ylab('Permeate Conductivity') + ylim(0, 1000) +
-    scale_color_manual(values = c('SteelBlue', 'Orange3'),
-                       labels = c('High', 'Low')) +
-    theme_minimal()
-  print(g)
-  if (OUTPUT) {
-    dev.off()
-  }
-}
-
-
-## Plots of feed pressure for each experiment.
-for (i in 1:N) {
-  if (OUTPUT) {
-    pdf(file = paste('../plots/ts/feed_pressure/feed_pressure', i,
-                     '.pdf', sep = ''), height = 4.0, width = 8.67)
-  }
-  g <- data %>%
-    filter(experiment == i) %>%
-    ggplot(aes(time, feed_pressure_psi)) +
-    geom_line(size = 0.25) +
-    ggtitle('Feed Pressure') +
-    labs(subtitle = paste('Experiment', i)) +
-    xlab('Time') + ylab('Feed Pressure (psi)') + ylim(-5.61, 1114.9) +
-    theme_minimal()
-  print(g)
-  if (OUTPUT) {
-    dev.off()
-  }
-}
-
-
-## Plots of feed flowrate for each experiment.
-for (i in 1:N) {
-  if (OUTPUT) {
-    pdf(file = paste('../plots/ts/feed_flowrate/feed_flowrate', i,
-                     '.pdf', sep = ''), height = 4.0, width = 8.67)
-  }
-  g <- data %>%
-    filter(experiment == i) %>%
-    ggplot(aes(time, feed_flowrate_l_min)) +
-    geom_line(size = 0.25) +
-    ggtitle('Feed Flowrate') +
-    labs(subtitle = paste('Experiment', i)) +
-    xlab('Time') + ylab('Feed Flowrate') +
-    theme_minimal()
-  print(g)
-  if (OUTPUT) {
-    dev.off()
-  }
-}
-
-
-## Plots of water flux for each experiment.
-for (i in 1:N) {
-  pdf(file = paste('../plots/ts/water_flux/water_flux', i,
-                   '.pdf', sep = ''), height = 4.0, width = 8.67)
-  g <- data %>%
-    filter(experiment == i) %>%
-    ggplot(aes(time, water_flux_lmh)) +
-    geom_line(size = 0.25) +
-    ggtitle('Water Flux') +
-    labs(subtitle = paste('Experiment', i)) +
-    xlab('Time') + ylab('Water Flux (lmh)') +
-    theme_minimal()
-  print(g)
-  dev.off()
-}
-rm(df, g)
-
-
 ## Scatterplot matrices.
 colors <- plasma(9)
 for (i in 1:N) {
-  pdf(file = paste('../plots/scatter_matrix/scatter_matrix', i,
-                   '.pdf', sep = ''), height = 5.0, width = 5.0)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/scatter_matrix/scatter_matrix', i,
+                     '.pdf', sep = ''), height = 10.0, width = 10.0)
+  }
   data %>%
     filter(experiment == i) %>%
-    select(feed_pressure_psi, feed_flowrate_l_min,
-           feed_pump_power_pct, water_flux_lmh) %>%
-    pairs(col = colors[i], cex = 0.20)
-  dev.off()
+    select(water_flux_lmh, feed_pressure_psi, feed_volume_l, feed_flowrate_l_min,
+           feed_pump_power_pct, permeate_flowrate_l_min,
+           permeate_conductivity_low_us, reject_flowrate_l_min,
+           reject_conductivity_ms) %>%
+    rename(
+      flux = water_flux_lmh,
+      feed_pressure = feed_pressure_psi,
+      feed_volume = feed_volume_l,
+      feed_flow = feed_flowrate_l_min,
+      feed_power = feed_pump_power_pct,
+      perm_flow = permeate_flowrate_l_min,
+      perm_cond = permeate_conductivity_low_us,
+      rej_flow = reject_flowrate_l_min,
+      rej_cond = reject_conductivity_ms,
+    ) %>%
+    pairs(cex = 0.20) #, col = colors[i])
+  if (OUTPUT) {
+    dev.off()
+  }
 }
 
 

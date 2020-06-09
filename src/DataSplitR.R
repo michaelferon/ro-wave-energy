@@ -108,23 +108,11 @@ data %>%
   filter(experiment == 1)
  
  
- 
- 
- #permeability coefficient function? 
- #water_flux = water flux 
- #feed_press = P_in (feed pressure)
- #press_feed_sol = pi_feed
- #press_reject = pi_rej
- #press_perm = pi_perm
 
- water_perm_coeff <- function(water_flux, feed_press, press_reject){
-   coeff <- water_flux/ (feed_press - ((400 + press_reject) / 2))
-   return(coeff)
- }
  
  #conversion equation Luke version
- conversion <- function(press_rej){
-   ppm <- press_rej / 2
+ conversion <- function(pi_rej){
+   ppm <- pi_rej / 2
    mole_per_liter <- ppm /35500
    return(mole_per_liter)
  }
@@ -147,14 +135,34 @@ data %>%
  }
  
  
+ #permeability coefficient function? 
+ #water_flux = water flux 
+ #feed_press = P_in (feed pressure)
+ #press_feed_sol = pi_feed
+ #press_reject = pi_rej
+ #press_perm = pi_perm
+ #R constant = L atm mol^-1 K^-1
+ water_perm_coeff <- function(water_flux, feed_press, pi_rej, temp){
+   
+   #Luke conversion equation
+   ppm <- pi_rej / 2
+   mole_per_liter <- ppm /35500
+   
+   #temperature conversion
+   kel <- temp + 273.15
+   
+   #pressure conversion
+   atm <- feed_press * 0.068046
+   
+   #pi_reject calculation
+   pi_r <- mole_per_liter * 0.08205 * kel
+   
+   coeff <- water_flux/ (atm - ((400 + pi_r) / 2))
+   return(coeff)
+ }
+ 
  
  #test of function
- exp1 <- data %>%
-   filter(experiment == 1)
- glimpse(exp1)
- exp1[430,]
 
-
- water_perm_coeff(exp1$water_flux_lmh[430], exp1$feed_pressure_psi[430], 409, exp1$)
  
 

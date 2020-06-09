@@ -117,9 +117,33 @@ data %>%
  #press_reject = pi_rej
  #press_perm = pi_perm
 
- water_perm_coeff <- function(water_flux, feed_press, press_feed_sol, press_reject, press_perm){
-   coeff <- water_flux/ (feed_press - ((press_feed_sol + press_reject) / 2) + press_perm)
+ water_perm_coeff <- function(water_flux, feed_press, press_reject){
+   coeff <- water_flux/ (feed_press - ((400 + press_reject) / 2))
    return(coeff)
+ }
+ 
+ #conversion equation Luke version
+ conversion <- function(press_rej){
+   ppm <- press_rej / 2
+   mole_per_liter <- ppm /35500
+   return(mole_per_liter)
+ }
+ 
+ #temperature conversion equation
+ kelvin_conversion <- function(temp){
+   kel <- temp + 273.15
+ }
+ 
+ #pressure conversion equation
+ atm_conversion <- function(press){
+   atm <- press * 0.068046
+   return(atm)
+ }
+ 
+ #pi_reject
+ #units of the constant are in L atm mol^-1 K^-1
+ pi_reject <- function(conversion, temp){
+   pi_r <- conversion * 0.08205 * temp
  }
  
  

@@ -19,10 +19,10 @@ data$time <- paste(data$date, data$time) %>%
 
 
 ## Remove some variables.
-# 'permeate_tank_level', 'feed_cleaning_valve_state', and
-# 'permeate_discharge_valve_state' have only one factor value.
+# 'permeate_tank_level', 'feed_cleaning_valve_state', 'temperature_valve_open_pct',
+# and 'permeate_discharge_valve_state' have only one factor value.
 del <- c('permeate_tank_level', 'feed_cleaning_valve_state',
-         'permeate_discharge_valve_state')
+         'permeate_discharge_valve_state', 'temperature_valve_open_pct')
 for (i in del) { print(length(unique(data[[i]]))) }
 data <- data %>%
   select(-date, -iteration, -all_of(del))

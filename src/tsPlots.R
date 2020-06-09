@@ -148,7 +148,7 @@ for (i in 1:N) {
 }
 
 
-## Plots of feed flowrate for each experiment.
+## Plots of feed flowrate.
 for (i in 1:N) {
   if (OUTPUT) {
     pdf(file = paste('../plots/ts/feed_flowrate/feed_flowrate', i,

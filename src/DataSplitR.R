@@ -142,8 +142,8 @@ data %>%
  #press_reject = pi_rej
  #press_perm = pi_perm
  #R constant = L atm mol^-1 K^-1
+ 
  water_perm_coeff <- function(water_flux, feed_press, pi_rej, temp){
-   
    #Luke conversion equation
    ppm <- pi_rej / 2
    mole_per_liter <- ppm /35500

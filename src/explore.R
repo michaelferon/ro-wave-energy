@@ -5,6 +5,7 @@ library(lubridate)
 library(viridis)
 library(ggplot2)
 library(tidyr)
+library(readr)
 library(dplyr)
 
 ## Load data.
@@ -33,6 +34,14 @@ tapply(data$experiment, data$experiment, length)
     select(-time, -system_mode) %>%
     group_by(experiment) %>%
     summarise_all(mad, na.rm = TRUE))
+
+if (OUTPUT) {
+  data %>%
+    select(-time, -system_mode) %>%
+    group_by(experiment) %>%
+    summarise_all(mean, na.rm = TRUE) %>%
+    write_csv(path = '../data/summary.csv')
+}
 
 
 
@@ -85,7 +94,6 @@ model <- data %>%
   lm(permeate_conductivity_low_us ~ ., data = .)
 summary(model)
 plot(model)
-
 
 
 

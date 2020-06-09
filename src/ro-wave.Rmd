@@ -16,34 +16,308 @@ library("viridis")
 ```
 
 ```{r}
-load("/Users/hattiemeans/Desktop/summer prog/roenergyMoWater.rda")
+load('../data/data.Rdata')
 
+N <- 9
+OUTPUT <- FALSE
 
-str(fulldata)
-head(fulldata)
-colnames(fulldata)
-view(fulldata)
+str(data)
+head(data)
+colnames(data)
+view(data)
+
+## experiments summary
+data %>%
+  select(-time, -runtime_h, -system_mode) %>%
+  group_by(experiment) %>%
+  summarise_all(mean) %>%
+  as.data.frame
+
+## feed pressure distribution by experiment
+ggplot(data, aes(x = feed_pressure_psi, color = experiment)) +
+  geom_density() +
+  ggtitle('Feed Pressure Distribution') +
+  labs(subtitle = 'by experiment', color = 'Exp.') +
+  xlab('Feed Pressure (psi)') + ylab('Density') +
+  theme_minimal()
+
+## plots of conductivity for each experiment.
+for (i in 1:N) {
+  df <- gather(data, key = measure, value = value,
+               c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
+  if (OUTPUT) {
+    pdf(file = paste('../plots/permeate_conductivity/permeate_conductivity', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
+  g <- df %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, value, group = measure, color = measure)) +
+    geom_line() +
+    ggtitle('Permeate Conductivity') +
+    labs(subtitle = paste('Experiment', i), color = 'Measure') +
+    xlab('Time') + ylab('Permeate Conductivity') + ylim(0, 1000) +
+    scale_color_manual(values = c('SteelBlue', 'Orange3'),
+                       labels = c('High', 'Low')) +
+    theme_minimal()
+  print(g)
+  if (OUTPUT) {
+    dev.off()
+  }
+}
+rm(df, g)
+
+## Plots of feed pressure for each experiment.
+for (i in 1:N) {
+  if (OUTPUT) {
+    pdf(file = paste('../plots/feed_pressure/feed_pressure', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, feed_pressure_psi)) +
+    geom_line(size = 0.25) +
+    ggtitle('Feed Pressure') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Feed Pressure (psi)') + ylim(-5.61, 1114.9) +
+    theme_minimal()
+  print(g)
+  if (OUTPUT) {
+    dev.off()
+  }
+}
+
+## Plots of feed flowrate for each experiment.
+for (i in 1:N) {
+  if (OUTPUT) {
+    pdf(file = paste('../plots/feed_flowrate/feed_flowrate', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, feed_flowrate_l_min)) +
+    geom_line(size = 0.25) +
+    ggtitle('Feed Flowrate') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Feed Flowrate') +
+    theme_minimal()
+  print(g)
+  if (OUTPUT) {
+    dev.off()
+  }
+}
+
+## Plots of water flux for each experiment.
+for (i in 1:N) {
+  pdf(file = paste('../plots/ts/water_flux/water_flux', i,
+                   '.pdf', sep = ''), height = 4.0, width = 8.67)
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, water_flux_lmh)) +
+    geom_line(size = 0.25) +
+    ggtitle('Water Flux') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Water Flux (lmh)') +
+    theme_minimal()
+  print(g)
+  dev.off()
+}
+
+## Scatterplot matrices.
+colors <- plasma(9)
+for (i in 1:N) {
+  pdf(file = paste('../plots/scatter_matrix/scatter_matrix', i,
+                   '.pdf', sep = ''), height = 5.0, width = 5.0)
+  data %>%
+    filter(experiment == i) %>%
+    select(feed_pressure_psi, feed_flowrate_l_min,
+           feed_pump_power_pct, water_flux_lmh) %>%
+    pairs(col = colors[i], cex = 0.20)
+  dev.off()
+}
+```
+  
+
+```{r}
+data %>% 
+  ggplot(aes(x = water_flux_lmh, y = time, color = factor(experiment))) + 
+  geom_line() +
+  facet_wrap(experiment~.)
+```
+
+```{r}
+
+## Feed Pump Power Over Time
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, feed_pump_power_pct)) +
+    geom_line(size = 0.25) +
+    ggtitle('Feed Pump Power') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Feed Pump Power') +
+    theme_minimal()
+  print(g)
+}
+
+## Permeate Conductivity Over Time
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, permeate_conductivity_high_us)) +
+    geom_line(size = 0.25) +
+    ggtitle('Perm (High) Conductivity') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Permeate Conductivity') +
+    theme_minimal()
+  print(g)
+}
+
+## Permeate Flow Rate
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, permeate_flowrate_l_min)) +
+    geom_line(size = 0.25) +
+    ggtitle('Permeate Flow Rate') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Permeate Flow Rate') +
+    theme_minimal()
+  print(g)
+}
+
+## Feed Flow Rate
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, feed_flowrate_l_min)) +
+    geom_line(size = 0.25) +
+    ggtitle('Feed Flow Rate') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Feed Flow Rate') +
+    theme_minimal()
+  print(g)
+}
+
+## Feed Pressure
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, feed_pressure_psi)) +
+    geom_line(size = 0.25) +
+    ggtitle('Feed Flow Rate') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Feed Pressure') +
+    theme_minimal()
+  print(g)
+}
+
+## To See How Water Flux Changes as Pump Power Increases
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(feed_pump_power_pct, water_flux_lmh)) +
+    geom_line(size = 0.25) +
+    ggtitle('Water Flux by Pump Power') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Pump Power') + ylab('Water Flux') +
+    theme_minimal()
+  print(g)
+}
+
+## To See How Conductivity Changes as Pump Power Increases
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(feed_pump_power_pct, permeate_conductivity_high_us)) +
+    geom_line() +
+    ggtitle('Conductivity by Pump Power') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Pump Power') + ylab('Conductivity') +
+    theme_minimal()
+  print(g)
+}
+
+for (i in 1:N) {
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, water_flux_lmh)) +
+    geom_line(size = 0.25) +
+    ggtitle('Water Flux') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Water Flux') +
+    theme_minimal()
+  print(g)
+}
 ```
 
 
-NOTE: 
 
-operational variables are used to calculate the integrity of the membrane. 
-operational variables in this data set:
-  -pressure
-  -volume
-  -temp
-  -flowrates
-  -permeability
-  
 ```{r}
-# turn data into tibble 
-data <- as_tibble(fulldata)
+ex1Data <- data %>% 
+  filter(experiment == 1)
 
+ex2Data <- data %>% 
+  filter(experiment == 2)
+ts.plot(ex2Data$water_flux_lmh)
+
+ex3data <- data %>% 
+  filter(experiment == 3) 
+
+feed_pressure3 <- ex3data %>% 
+  ggplot(aes(time, feed_pressure_psi)) + 
+  geom_line()
+water_flux3 <- ex3data %>% 
+  ggplot(aes(time, water_flux_lmh)) + 
+  geom_line()
+flowrate3 <- ex3data %>% 
+  ggplot(aes(time, feed_flowrate_l_min)) + 
+  geom_line()
+conductivity3 <- ex3data %>% 
+  ggplot(aes(time, permeate_conductivity_high_us)) + 
+  geom_line()
+
+feed_pressure3
+water_flux3
+flowrate3
+conductivity3
+
+ex4Data <- data %>% 
+  filter(experiment == 4)
+#view(ex4Data)
+ts.plot(ex4Data$water_flux_lmh)
+
+ex5Data <- data %>% 
+  filter(experiment == 5)
+#view(ex5Data)
+ts.plot(ex5Data$water_flux_lmh)
+
+ex7Data <- data %>% 
+  filter(experiment == 7)
+#view(ex7Data)
+ts.plot(ex7Data$water_flux_lmh)
+
+ex8Data <- data %>% 
+  filter(experiment == 8)
+#view(ex8Data)
+ts.plot(ex8Data$water_flux_lmh)
+
+ex9Data <- data %>% 
+  filter(experiment == 9)
+#view(ex9Data)
+ts.plot(ex9Data$water_flux_lmh)
+
+exTenData <- data %>% 
+  filter(experiment == 10)
+#view(ex10Data)
+ts.plot(exTenData$water_flux_lmh)
+
+```
+
+DONE: 
 ## taking out repetative data
 data <- subset(data, data$experiment != 6 & data$experiment != 11)
 unique(data$experiment)
-
+view(data)
 ## convert date, time to time: POSIXct
 data$time <- paste(data$date, data$time) %>%
   parse_date_time('%Y-%m-%d %H:%M:%S %p')
@@ -52,63 +326,13 @@ data <- data %>%
   select(-date)
 data$experiment <- as.factor(data$experiment)
 rm(temp)
-```
 
-```{r}
 ## divide data by experiment
 tapply(data$experiment, data$experiment, length)
 
-ex1Data <- data %>% 
-  filter(experiment == 1)
-#view(ex1Data)
-glimpse(ex1Data)
-
-ex2Data <- data %>% 
-  filter(experiment == 2) %>% 
-#view(ex2Data)
-
-ex3Data <- data %>% 
-  filter(experiment == 3)
-#view(ex3Data)
-
-ex4Data <- data %>% 
-  filter(experiment == 4)
-#view(ex4Data)
-
-ex5Data <- data %>% 
-  filter(experiment == 5)
-#view(ex5Data)
-
-ex6Data <- data %>% 
-  filter(experiment == 6)
-#view(ex6Data)
-glimpse(ex6Data)
-
-ex7Data <- data %>% 
-  filter(experiment == 7)
-#view(ex7Data)
-
-ex8Data <- data %>% 
-  filter(experiment == 8)
-#view(ex8Data)
-
-ex9Data <- data %>% 
-  filter(experiment == 9)
-#view(ex9Data)
-
-ex10Data <- data %>% 
-  filter(experiment == 10)
-#view(ex10Data)
-
-ex11Data <- data %>% 
-  filter(experiment == 11)
-#view(ex11Data)
-
 data %>% 
   ggplot(data, ase)
-```
 
-```{r}
 data %>%
   filter(experiment == 2 | experiment == 11) %>%
   select(-time, -permeate_tank_level, -feed_cleaning_valve_state,
@@ -124,7 +348,7 @@ data %>%
   group_by(experiment) %>%
   summarise_all(mean) %>%
   as.data.frame
-```
+
 
 
 

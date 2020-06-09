@@ -110,59 +110,9 @@ data %>%
  
 
  
- #conversion equation Luke version
- conversion <- function(pi_rej){
-   ppm <- pi_rej / 2
-   mole_per_liter <- ppm /35500
-   return(mole_per_liter)
+#water perm coefficent function
+ water_perm_coeff <- function(flux, feed_press, reject_cond, temp){
+   pi_r <- ((1000 * reject_cond)/(2 * 35500)) * 0.08313716 * (temp + 273.15)
+   coeff <- flux / (feed_press - (27.57094 + pi_r)/2)
  }
  
- #temperature conversion equation
- kelvin_conversion <- function(temp){
-   kel <- temp + 273.15
- }
- 
- #pressure conversion equation
- atm_conversion <- function(press){
-   atm <- press * 0.068046
-   return(atm)
- }
- 
- #pi_reject
- #units of the constant are in L atm mol^-1 K^-1
- pi_reject <- function(conversion, temp){
-   pi_r <- conversion * 0.08205 * temp
- }
- 
- 
- #permeability coefficient function? 
- #water_flux = water flux 
- #feed_press = P_in (feed pressure)
- #press_feed_sol = pi_feed
- #press_reject = pi_rej
- #press_perm = pi_perm
- #R constant = L atm mol^-1 K^-1
- 
- water_perm_coeff <- function(water_flux, feed_press, pi_rej, temp){
-   #Luke conversion equation
-   ppm <- pi_rej / 2
-   mole_per_liter <- ppm /35500
-   
-   #temperature conversion
-   kel <- temp + 273.15
-   
-   #pressure conversion
-   atm <- feed_press * 0.068046
-   
-   #pi_reject calculation
-   pi_r <- mole_per_liter * 0.08205 * kel
-   
-   coeff <- water_flux/ (atm - ((400 + pi_r) / 2))
-   return(coeff)
- }
- 
- 
- #test of function
-
- 
-

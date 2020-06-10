@@ -16,7 +16,7 @@ N <- 9
 OUTPUT <- FALSE
 
 
-## Experiments summary.
+## Experiments summarries.
 tapply(data$experiment, data$experiment, length)
 (data.mean <- data %>%
   select(-time, -system_mode) %>%
@@ -35,7 +35,7 @@ tapply(data$experiment, data$experiment, length)
     group_by(experiment) %>%
     summarise_all(mad, na.rm = TRUE))
 
-if (OUTPUT) {
+if (OUTPUT) { # Write mean summary to file.
   data %>%
     select(-time, -system_mode) %>%
     group_by(experiment) %>%
@@ -57,17 +57,15 @@ for (i in 1:N) {
     filter(experiment == i) %>%
     select(water_flux_lmh, feed_pressure_psi, feed_volume_l, feed_flowrate_l_min,
            feed_pump_power_pct, permeate_flowrate_l_min,
-           permeate_conductivity_low_us, reject_flowrate_l_min,
-           reject_conductivity_ms) %>%
+           permeate_conductivity_low_us, reject_conductivity_ms) %>%
     rename(
       flux = water_flux_lmh,
-      feed_pressure = feed_pressure_psi,
-      feed_volume = feed_volume_l,
+      feed_psi = feed_pressure_psi,
+      feed_vol = feed_volume_l,
       feed_flow = feed_flowrate_l_min,
-      feed_power = feed_pump_power_pct,
+      feed_pow = feed_pump_power_pct,
       perm_flow = permeate_flowrate_l_min,
       perm_cond = permeate_conductivity_low_us,
-      rej_flow = reject_flowrate_l_min,
       rej_cond = reject_conductivity_ms,
     ) %>%
     pairs(cex = 0.10) #, col = colors[i])

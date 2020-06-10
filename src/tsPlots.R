@@ -12,7 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
-OUTPUT <- FALSE
+OUTPUT <- TRUE
 
 
 
@@ -23,12 +23,12 @@ for (i in 1:N) {
                c('permeate_conductivity_high_us', 'permeate_conductivity_low_us'))
   if (OUTPUT) {
     pdf(file = paste('../plots/ts/permeate_conductivity/permeate_conductivity', i,
-                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+                     '.pdf', sep = ''), height = 4.0, width = 9.5)
   }
   g <- df %>%
     filter(experiment == i) %>%
     ggplot(aes(time, value, group = measure, color = measure)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(250, 1000) +
     ggtitle('Permeate Conductivity') +
     labs(subtitle = paste('Experiment', i), color = 'Measure') +
     xlab('Time') + ylab('Permeate Conductivity (uS)') + #ylim(0, 1100) +
@@ -52,7 +52,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, reject_conductivity_ms)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(50, 63) +
     ggtitle('Reject Conductivity') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Reject Conductivity (mS)') +
@@ -73,10 +73,10 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_pressure_psi)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(range(data$feed_pressure_psi)) +
     ggtitle('Feed Pressure') +
     labs(subtitle = paste('Experiment', i)) +
-    xlab('Time') + ylab('Feed Pressure (psi)') + #ylim(-5.61, 1114.9) +
+    xlab('Time') + ylab('Feed Pressure (psi)') +
     theme_minimal()
   print(g)
   if (OUTPUT) {
@@ -94,7 +94,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_volume_l)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(range(data$feed_volume_l)) +
     ggtitle('Feed Volume') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Feed Volume') +
@@ -115,7 +115,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, permeate_flowrate_l_min)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(min(data$permeate_flowrate_l_min), 2.02) +
     ggtitle('Permeate Flowrate') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Permeate Flowrate') +
@@ -136,7 +136,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, reject_flowrate_l_min)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(1, max(data$reject_flowrate_l_min)) +
     ggtitle('Reject Flowrate') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Reject Flowrate') +
@@ -157,7 +157,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_flowrate_l_min)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(1, 8.25) +
     ggtitle('Feed Flowrate') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Feed Flowrate') +
@@ -178,7 +178,7 @@ for (i in 1:N) {
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, feed_pump_power_pct)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(20, max(data$feed_pump_power_pct)) +
     ggtitle('Feed Pump Power') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Feed Pump Power') +
@@ -192,18 +192,43 @@ for (i in 1:N) {
 
 ## Plots of water flux.
 for (i in 1:N) {
-  pdf(file = paste('../plots/ts/water_flux/water_flux', i,
-                   '.pdf', sep = ''), height = 4.0, width = 8.67)
+  if (OUTPUT) {
+    pdf(file = paste('../plots/ts/water_flux/water_flux', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
   g <- data %>%
     filter(experiment == i) %>%
     ggplot(aes(time, water_flux_lmh)) +
-    geom_line(size = 0.25) +
+    geom_line(size = 0.25) + ylim(0, 45) +
     ggtitle('Water Flux') +
     labs(subtitle = paste('Experiment', i)) +
     xlab('Time') + ylab('Water Flux (lmh)') +
     theme_minimal()
   print(g)
-  dev.off()
+  if (OUTPUT) {
+    dev.off()
+  }
+}
+
+
+## Plots of water permeability.
+for (i in 1:N) {
+  if (OUTPUT) {
+    pdf(file = paste('../plots/ts/water_permeability/water_permeability', i,
+                     '.pdf', sep = ''), height = 4.0, width = 8.67)
+  }
+  g <- data %>%
+    filter(experiment == i) %>%
+    ggplot(aes(time, water_perm)) +
+    geom_line(size = 0.25) + ylim(0, 0.102) +
+    ggtitle('Water Flux') +
+    labs(subtitle = paste('Experiment', i)) +
+    xlab('Time') + ylab('Water Permeability') +
+    theme_minimal()
+  print(g)
+  if (OUTPUT) {
+    dev.off()
+  }
 }
 
 

@@ -87,11 +87,13 @@ for (var in vars) {
 
 ## Simple linear model.
 model <- data %>%
+  filter(experiment == 2) %>%
   select(-time, -permeate_conductivity_high_us, -reject_conductivity_ms,
          -experiment, -ac_current_a) %>%
   lm(permeate_conductivity_low_us ~ ., data = .)
 summary(model)
 plot(model)
+
 
 
 

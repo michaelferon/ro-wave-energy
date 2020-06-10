@@ -12,7 +12,7 @@ load('../data/data.Rdata')
 
 ## Number of experiments = 9.
 N <- 9
-OUTPUT <- TRUE
+OUTPUT <- FALSE
 
 
 
